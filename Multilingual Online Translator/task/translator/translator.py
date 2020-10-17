@@ -39,7 +39,7 @@ def print_translation(from_number, to_number, word):
         sys.stdout = original_stdout
 
 
-def run():
+def get_input():
     print("Hello, you're welcome to the translator. Translator supports:")
     for i in range(1, len(languages)):
         print('{}. {}'.format(i, languages[i]))
@@ -53,6 +53,11 @@ def run():
     print('Type the word you want to translate:')
     word = input()
     # word = 'hello'
+    return from_number, to_number, word
+
+
+def run():
+    from_number, to_number, word = get_input()
     if to_number:
         print_translation(from_number, to_number, word)
     else:

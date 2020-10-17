@@ -11,6 +11,12 @@ def translate(from_num, to_num, w):
     url = 'https://context.reverso.net/translation/{}-{}/{}'.\
         format(languages[from_num].lower(), languages[to_num].lower(), w)
     response = requests.get(url, headers=headers)
+    if response.status_code != 200 and response.status_code != 404:
+        print('Something wrong with your internet connection')
+        exit(0)
+    if response.status_code == 404:
+        print('Sorry, unable to find ' + w)
+        exit(0)
     soup = BeautifulSoup(response.content, 'html.parser')
     found_words = [item.text.strip() for item in soup.find_all('a', {'class': 'translation'})][1:6]
     found_examples = soup.find_all('div', {'class': 'example'})
@@ -31,6 +37,9 @@ def print_results(found_words, examples, to_num):
 
 def print_translation(from_number, to_number, word):
     found_words, examples = translate(from_number, to_number, word)
+    # if not found_words or not examples:
+    #     print('Sorry, unable to find ' + word)
+    #     exit(0)
     print_results(found_words, examples, to_number)
     original_stdout = sys.stdout
     with open(word + '.txt', 'a', encoding='utf-8') as f_out:
@@ -61,6 +70,12 @@ def run():
         from_number, to_number, word = get_input()
     else:
         from_number, to_number, word = sys.argv[1:]
+        if str(from_number).capitalize() not in languages:
+            print("Sorry, the program doesn't support " + from_number)
+            exit(0)
+        if str(to_number).capitalize() not in languages and to_number != 'all':
+            print("Sorry, the program doesn't support " + to_number)
+            exit(0)
         from_number = languages.index(str(from_number).capitalize())
         if str(to_number).capitalize() in languages:
             to_number = languages.index(str(to_number).capitalize())

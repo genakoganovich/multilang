@@ -33,7 +33,7 @@ def print_translation(from_number, to_number, word):
     found_words, examples = translate(from_number, to_number, word)
     print_results(found_words, examples, to_number)
     original_stdout = sys.stdout
-    with open(word + '.txt', 'a') as f_out:
+    with open(word + '.txt', 'a', encoding='utf-8') as f_out:
         sys.stdout = f_out
         print_results(found_words, examples, to_number)
         sys.stdout = original_stdout
@@ -45,19 +45,28 @@ def get_input():
         print('{}. {}'.format(i, languages[i]))
 
     print('Type the number of your language:')
-    from_number = int(input())
-    # from_number = 3
+    # from_number = int(input())
+    from_number = 3
     print('Type the number of language you want to translate to:')
-    to_number = int(input())
-    # to_number = 0
+    # to_number = int(input())
+    to_number = 0
     print('Type the word you want to translate:')
-    word = input()
-    # word = 'hello'
+    # word = input()
+    word = 'hello'
     return from_number, to_number, word
 
 
 def run():
-    from_number, to_number, word = get_input()
+    if len(sys.argv) != 4:
+        from_number, to_number, word = get_input()
+    else:
+        from_number, to_number, word = sys.argv[1:]
+        from_number = languages.index(str(from_number).capitalize())
+        if str(to_number).capitalize() in languages:
+            to_number = languages.index(str(to_number).capitalize())
+        else:
+            to_number = 0
+
     if to_number:
         print_translation(from_number, to_number, word)
     else:
